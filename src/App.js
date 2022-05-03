@@ -3,6 +3,7 @@ import FeedbackItem from './components/FeedbackItem';
 import FeedbackData from './data/FeedbackData';
 import FeedbackList from './components/FeedbackList';
 import { useState } from 'react';
+import FeedbackStats from './components/FeedbackStats';
 
 function App() {
   const [feedback, setFeedback] = useState(FeedbackData);
@@ -17,6 +18,7 @@ function App() {
     <>
       <Header />
       <div className='container'>
+        <FeedbackStats feedback={feedback} />
         <FeedbackList feedback={feedback} handleDelete={deleteFeedback} />
         {/* prop drilling. have to put deleteFeedback in main App because this is where statehook is used */}
       </div>

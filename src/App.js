@@ -5,6 +5,8 @@ import FeedbackList from './components/FeedbackList';
 import { useState } from 'react';
 import FeedbackStats from './components/FeedbackStats';
 import FeedbackForm from './components/FeedbackForm';
+import { v4 as uuidv4 } from 'uuid';
+// generates unique ID
 
 function App() {
   const [feedback, setFeedback] = useState(FeedbackData);
@@ -15,11 +17,18 @@ function App() {
       // id is given from FeedbackItem
     }
   };
+  const addFeedback = (newFeedback) => {
+    newFeedback.id = uuidv4();
+    // setFeedback = [newFeedback, ...feedback];
+    console.log(newFeedback);
+    setFeedback([newFeedback, ...feedback]);
+  };
   return (
     <>
       <Header />
       <div className='container'>
-        <FeedbackForm />
+        <FeedbackForm handleAdd={addFeedback} />
+        {/* access the additional feedback in Feedback form */}
         <FeedbackStats feedback={feedback} />
         <FeedbackList feedback={feedback} handleDelete={deleteFeedback} />
         {/* prop drilling. have to put deleteFeedback in main App because this is where statehook is used */}

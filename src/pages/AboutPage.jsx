@@ -7,10 +7,10 @@ function AboutPage() {
     <Card>
       <div className='about'>
         <h1>About This Project</h1>
-        <h2>
+        <p>
           This is a React project to leave feedback. Learned from an online
           tutorial.
-        </h2>
+        </p>
         <p>
           <Link to='/'>Back to Home</Link>
         </p>

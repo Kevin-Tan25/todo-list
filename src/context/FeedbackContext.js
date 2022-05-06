@@ -11,6 +11,12 @@ export const FeedbackProvider = ({ children }) => {
       rating: 10,
     },
   ]);
+  const [feedbackEdit, setFeedbackEdit] = useState({
+    item: {},
+    // The item we are editing
+    edit: false,
+  });
+  // delete feedback
   const deleteFeedback = (id) => {
     // deleteFeedback takes in prop id because FeedbackItem returns item.id
     if (window.confirm('Are you sure you want to delete?')) {
@@ -18,14 +24,40 @@ export const FeedbackProvider = ({ children }) => {
       // id is given from FeedbackItem
     }
   };
+  // add feedback
   const addFeedback = (newFeedback) => {
     newFeedback.id = uuidv4();
     // setFeedback = [newFeedback, ...feedback];
     console.log(newFeedback);
     setFeedback([newFeedback, ...feedback]);
   };
+  // edit item
+  const editFeedback = (item) => {
+    setFeedbackEdit({
+      item,
+      edit: true,
+    });
+  };
+  // update feedback item
+  const updateFeedback = (id, updItem) => {
+    setFeedback(
+      feedback.map((item) => (item.id === id ? { ...item, ...updItem } : item))
+      // why is spread needed here?
+    );
+  };
   return (
-    <FeedbackContext.Provider value={{ feedback, deleteFeedback, addFeedback }}>
+    <FeedbackContext.Provider
+      value={{
+        feedback,
+        feedbackEdit,
+        deleteFeedback,
+        addFeedback,
+        editFeedback,
+        updateFeedback,
+      }}
+      // editFeedback is the function
+      // feedbackEdit is the state that holds the object and the boolean
+    >
       {children}
     </FeedbackContext.Provider>
   );

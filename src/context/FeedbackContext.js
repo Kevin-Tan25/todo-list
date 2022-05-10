@@ -25,21 +25,29 @@ export const FeedbackProvider = ({ children }) => {
     setFeedback(data);
     setIsLoading(false);
   };
-  // delete feedback
-  const deleteFeedback = (id) => {
-    // deleteFeedback takes in prop id because FeedbackItem returns item.id
+  const addFeedback = async (newFeedback) => {
+    const response = await fetch('http://localhost:8000/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newFeedback),
+    });
+
+    const data = await response.json();
+
+    setFeedback([data, ...feedback]);
+  };
+
+  // Delete feedback
+  const deleteFeedback = async (id) => {
     if (window.confirm('Are you sure you want to delete?')) {
+      await fetch(`http://localhost:8000/feedback/${id}`, { method: 'DELETE' });
+
       setFeedback(feedback.filter((item) => item.id !== id));
-      // id is given from FeedbackItem
     }
   };
-  // add feedback
-  const addFeedback = (newFeedback) => {
-    newFeedback.id = uuidv4();
-    // setFeedback = [newFeedback, ...feedback];
-    console.log(newFeedback);
-    setFeedback([newFeedback, ...feedback]);
-  };
+
   // edit item
   const editFeedback = (item) => {
     setFeedbackEdit({

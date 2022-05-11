@@ -29,11 +29,14 @@ export const FeedbackProvider = ({ children }) => {
     const response = await fetch('http://localhost:8000/feedback', {
       method: 'POST',
       headers: {
+        // specifies the application type
         'Content-Type': 'application/json',
       },
+      // converts to JSON
       body: JSON.stringify(newFeedback),
     });
 
+    // returns the new object created in json
     const data = await response.json();
 
     setFeedback([data, ...feedback]);
@@ -44,6 +47,7 @@ export const FeedbackProvider = ({ children }) => {
     if (window.confirm('Are you sure you want to delete?')) {
       await fetch(`http://localhost:8000/feedback/${id}`, { method: 'DELETE' });
 
+      // returns all items in list MINUS the id that we are passing in
       setFeedback(feedback.filter((item) => item.id !== id));
     }
   };
@@ -56,11 +60,24 @@ export const FeedbackProvider = ({ children }) => {
     });
   };
   // update feedback item
-  const updateFeedback = (id, updItem) => {
-    setFeedback(
-      feedback.map((item) => (item.id === id ? { ...item, ...updItem } : item))
-      // why is spread needed here?
-    );
+  const updateFeedback = async (id, updItem) => {
+    const response = await fetch(`/feedback/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updItem),
+    });
+
+    const data = await response.json();
+
+    // NOTE: no need to spread data and item
+    setFeedback(feedback.map((item) => (item.id === id ? data : item)));
+
+    setFeedbackEdit({
+      item: {},
+      edit: false,
+    });
   };
   return (
     <FeedbackContext.Provider

@@ -19,7 +19,10 @@ export const FeedbackProvider = ({ children }) => {
   // need to understand what this does
   const fetchFeedback = async () => {
     const response = await fetch(
-      `http://localhost:8000/feedback?_sort=rating&_order=desc`
+      `http://localhost:8000/feedback?_sort=rating&_order=desc`,
+      {
+        mode: 'no-cors',
+      }
     );
     const data = await response.json();
     setFeedback(data);
@@ -27,6 +30,7 @@ export const FeedbackProvider = ({ children }) => {
   };
   const addFeedback = async (newFeedback) => {
     const response = await fetch('http://localhost:8000/feedback', {
+      mode: 'no-cors',
       method: 'POST',
       headers: {
         // specifies the application type
@@ -45,7 +49,10 @@ export const FeedbackProvider = ({ children }) => {
   // Delete feedback
   const deleteFeedback = async (id) => {
     if (window.confirm('Are you sure you want to delete?')) {
-      await fetch(`http://localhost:8000/feedback/${id}`, { method: 'DELETE' });
+      await fetch(`http://localhost:8000/feedback/${id}`, {
+        mode: 'no-cors',
+        method: 'DELETE',
+      });
 
       // returns all items in list MINUS the id that we are passing in
       setFeedback(feedback.filter((item) => item.id !== id));
@@ -62,6 +69,7 @@ export const FeedbackProvider = ({ children }) => {
   // update feedback item
   const updateFeedback = async (id, updItem) => {
     const response = await fetch(`/feedback/${id}`, {
+      mode: 'no-cors',
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

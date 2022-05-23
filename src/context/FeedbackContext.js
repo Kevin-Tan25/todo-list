@@ -18,19 +18,14 @@ export const FeedbackProvider = ({ children }) => {
 
   // need to understand what this does
   const fetchFeedback = async () => {
-    const response = await fetch(
-      `http://localhost:8000/feedback?_sort=rating&_order=desc`,
-      {
-        mode: 'no-cors',
-      }
-    );
+    const response = await fetch(`/feedback?_sort=id&_order=desc`);
     const data = await response.json();
+    // use .then
     setFeedback(data);
     setIsLoading(false);
   };
   const addFeedback = async (newFeedback) => {
-    const response = await fetch('http://localhost:8000/feedback', {
-      mode: 'no-cors',
+    const response = await fetch('/feedback', {
       method: 'POST',
       headers: {
         // specifies the application type
@@ -49,8 +44,7 @@ export const FeedbackProvider = ({ children }) => {
   // Delete feedback
   const deleteFeedback = async (id) => {
     if (window.confirm('Are you sure you want to delete?')) {
-      await fetch(`http://localhost:8000/feedback/${id}`, {
-        mode: 'no-cors',
+      await fetch(`/feedback/${id}`, {
         method: 'DELETE',
       });
 

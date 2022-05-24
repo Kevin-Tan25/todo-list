@@ -16,7 +16,7 @@ function App() {
     <FeedbackProvider>
       {/* use context, what the value is being passed what props */}
       <Router>
-        <Header />
+        <Header text='Feedback App' />
         <div className='container'>
           <Routes>
             <Route

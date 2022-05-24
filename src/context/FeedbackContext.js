@@ -1,58 +1,35 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 const FeedbackContext = createContext();
 
 export const FeedbackProvider = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [feedback, setFeedback] = useState([]);
+  const [feedback, setFeedback] = useState([
+    {
+      id: 1,
+      text: 'This is an example feedback item',
+      rating: 10,
+    },
+  ]);
   const [feedbackEdit, setFeedbackEdit] = useState({
     item: {},
     // The item we are editing
     edit: false,
   });
-
-  useEffect(() => {
-    fetchFeedback();
-  }, []);
-
-  // need to understand what this does
-  const fetchFeedback = async () => {
-    const response = await fetch(`/feedback?_sort=id&_order=desc`);
-    const data = await response.json();
-    // use .then
-    setFeedback(data);
-    setIsLoading(false);
-  };
-  const addFeedback = async (newFeedback) => {
-    const response = await fetch('/feedback', {
-      method: 'POST',
-      headers: {
-        // specifies the application type
-        'Content-Type': 'application/json',
-      },
-      // converts to JSON
-      body: JSON.stringify(newFeedback),
-    });
-
-    // returns the new object created in json
-    const data = await response.json();
-
-    setFeedback([data, ...feedback]);
-  };
-
-  // Delete feedback
-  const deleteFeedback = async (id) => {
+  // delete feedback
+  const deleteFeedback = (id) => {
+    // deleteFeedback takes in prop id because FeedbackItem returns item.id
     if (window.confirm('Are you sure you want to delete?')) {
-      await fetch(`/feedback/${id}`, {
-        method: 'DELETE',
-      });
-
-      // returns all items in list MINUS the id that we are passing in
       setFeedback(feedback.filter((item) => item.id !== id));
+      // id is given from FeedbackItem
     }
   };
-
+  const addFeedback = (newFeedback) => {
+    newFeedback.id = uuidv4();
+    // setFeedback = [newFeedback, ...feedback];
+    console.log(newFeedback);
+    setFeedback([newFeedback, ...feedback]);
+  };
   // edit item
   const editFeedback = (item) => {
     setFeedbackEdit({
@@ -61,39 +38,22 @@ export const FeedbackProvider = ({ children }) => {
     });
   };
   // update feedback item
-  const updateFeedback = async (id, updItem) => {
-    const response = await fetch(`/feedback/${id}`, {
-      mode: 'no-cors',
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updItem),
-    });
-
-    const data = await response.json();
-
-    // NOTE: no need to spread data and item
-    setFeedback(feedback.map((item) => (item.id === id ? data : item)));
-
-    setFeedbackEdit({
-      item: {},
-      edit: false,
-    });
+  const updateFeedback = (id, updItem) => {
+    setFeedback(
+      feedback.map((item) => (item.id === id ? { ...item, ...updItem } : item))
+      // why is spread needed here?
+    );
   };
   return (
     <FeedbackContext.Provider
       value={{
         feedback,
         feedbackEdit,
-        isLoading,
         deleteFeedback,
         addFeedback,
         editFeedback,
         updateFeedback,
       }}
-      // editFeedback is the function
-      // feedbackEdit is the state that holds the object and the boolean
     >
       {children}
     </FeedbackContext.Provider>
@@ -101,5 +61,3 @@ export const FeedbackProvider = ({ children }) => {
 };
 
 export default FeedbackContext;
-
-// Testing changes
